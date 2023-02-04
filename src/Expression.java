@@ -19,9 +19,9 @@ public class Expression{
         ArrayList<String> tipos = new ArrayList<>();
         ArrayList<String> comments = new ArrayList<>();
 
-        gramaticaMiniJava.add(Pattern.compile("^class [a-zA-Z][a-zA-Z0-9_]*? \\{$",1));
-        gramaticaMiniJava.add(Pattern.compile("^\s*?public static void main\\(String\\[\\] [a-zA-Z][a-zA-Z0-9_]*?\\) \\{$",1));
-        gramaticaMiniJava.add(Pattern.compile("^sub \\$[t|s][0-7],\\$[t|s][0-7],\\$[t|s][0-7]",1));
+        gramaticaMiniJava.add(Pattern.compile("^class [a-zA-Z][a-zA-Z0-9_]*? \\{$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*?public static void main\\(String\\[\\] [a-zA-Z][a-zA-Z0-9_]*?\\) \\{$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\\s*?System.out.println\\(\".*?\"|new [a-zA-Z][a-zA-Z0-9]*?\\(\\).[a-zA-Z][a-zA-Z0-9]*?\\([0-9]*?\\)\\);$", 1));
         gramaticaMiniJava.add(Pattern.compile("^lw \\$[t|s][0-7],[0-9]\\d*\\(\\$[t|s][0-7]\\)",1));
         gramaticaMiniJava.add(Pattern.compile("^sw \\$[t|s][0-7],[0-9]\\d*\\(\\$[t|s][0-7]\\)",1));
         
@@ -46,7 +46,21 @@ public class Expression{
                             ids.add(comandoSeparado[1]);
                             delims.add(comandoSeparado[2]);
                         }
-
+                        else if(i == 1) {
+                            int j = 0;
+                            if (comando.charAt(0) == ' ') {
+                                while(comando.charAt(j) == ' ') {
+                                    j++;
+                                }
+                            }
+                            comandoSeparado = comando.split(" ", j + 5);
+                                
+                            decls.add(comandoSeparado[j]);
+                            decls.add(comandoSeparado[j + 1]);
+                            decls.add(comandoSeparado[j + 2]);
+                            decls.add(comandoSeparado[j + 3]);
+                        }
+                        
                         break;
                     } else {
                         if (i == gramaticaMiniJava.size() - 1) {
@@ -61,7 +75,7 @@ public class Expression{
         catch(IOException e) {
             System.out.println("Erro na leitura do arquivo de entrada!");
         }
-
+        
         System.out.println("\nTokens coletados: \n");
         System.out.println("ID: " + ids);
         System.out.println("OP: " + ops);
