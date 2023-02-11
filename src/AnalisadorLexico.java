@@ -1,4 +1,3 @@
-import java.sql.Array;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.BufferedReader;
@@ -7,7 +6,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Expression{
+/*
+ * Trabalho Pratico 01: Analisador Lexico - MiniJava
+ * 
+ * Desenvolvido por:
+ *     - Isac Lopes
+ *     - Lucas Novais
+ *     - Marcos Alexandre
+ */
+
+public class AnalisadorLexico {
     public static void main(String[] args) {
         ArrayList<Pattern> gramaticaMiniJava = new ArrayList<>();
 
@@ -32,6 +40,7 @@ public class Expression{
 
             String comando = leitor.readLine();
             String[] comandoSeparado;
+            String[] auxComandoSeparado;
 
             while(comando != null) {
                 for(int i = 0; i < gramaticaMiniJava.size(); i++) {
@@ -48,17 +57,52 @@ public class Expression{
                         }
                         else if(i == 1) {
                             int j = 0;
+
                             if (comando.charAt(0) == ' ') {
                                 while(comando.charAt(j) == ' ') {
                                     j++;
                                 }
                             }
+
                             comandoSeparado = comando.split(" ", j + 5);
-                                
+
                             decls.add(comandoSeparado[j]);
                             decls.add(comandoSeparado[j + 1]);
                             decls.add(comandoSeparado[j + 2]);
-                            decls.add(comandoSeparado[j + 3]);
+                            
+                            auxComandoSeparado = comandoSeparado[j + 3].split("\\(", 2);
+
+                            decls.add(auxComandoSeparado[0]);
+
+                            delims.add("(");
+
+                            tipos.add(auxComandoSeparado[1].split("\\[", 0)[0]);
+
+                            delims.add("[");
+                            delims.add("]");
+
+                            ids.add(comandoSeparado[j + 4].split("\\)", 0)[0]);
+                            delims.add(")");
+                            delims.add("{");
+                        }
+                        else if(i == 2) {
+                            comando = comando.trim();
+
+                            comandoSeparado = comando.split("\\(", 2);
+
+                            fluxos.add(comandoSeparado[0]);
+                            delims.add("(");
+
+                            if(comandoSeparado[1].charAt(0) == '"') {
+                                System.out.println(comandoSeparado[1]);
+                            }
+                            else {
+                                auxComandoSeparado = comandoSeparado[1].split(" ", 2);
+                                decls.add(auxComandoSeparado[0]);
+
+                                fluxos.add(auxComandoSeparado[1].substring(0, auxComandoSeparado[1].length() - 2));
+                                delims.add(")");
+                            }
                         }
                         
                         break;
