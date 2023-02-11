@@ -30,9 +30,12 @@ public class AnalisadorLexico {
         gramaticaMiniJava.add(Pattern.compile("^class [a-zA-Z][a-zA-Z0-9_]*? \\{$", 1));
         gramaticaMiniJava.add(Pattern.compile("^\s*?public static void main\\(String\\[\\] [a-zA-Z][a-zA-Z0-9_]*?\\) \\{$", 1));
         gramaticaMiniJava.add(Pattern.compile("^\\s*?System.out.println\\(\".*?\"|new [a-zA-Z][a-zA-Z0-9]*?\\(\\).[a-zA-Z][a-zA-Z0-9]*?\\([0-9]*?\\)\\);$", 1));
-        gramaticaMiniJava.add(Pattern.compile("^lw \\$[t|s][0-7],[0-9]\\d*\\(\\$[t|s][0-7]\\)",1));
-        gramaticaMiniJava.add(Pattern.compile("^sw \\$[t|s][0-7],[0-9]\\d*\\(\\$[t|s][0-7]\\)",1));
-        
+        gramaticaMiniJava.add(Pattern.compile("^\\s*?\\}$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*public int|boolean|void|int\\[\\]|boolean\\[\\] [a-zA-Z][a-zA-Z0-9_]*?\\(int|boolean|void|int\\[\\]|boolean\\[\\] [a-zA-Z][a-zA-Z0-9_]*?\\) \\{$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*int|bool|int\\[\\]|bool\\[\\] [a-zA-Z][a-zA-Z0-9_]*?;$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*if \\(num <|>|==|<=|>= [0-9]\\)\s*?\\{?$", 1));
+
         try {
             File arq = new File("entrada.txt");
             FileReader reader = new FileReader(arq);
@@ -104,7 +107,33 @@ public class AnalisadorLexico {
                                 delims.add(")");
                             }
                         }
-                        
+                        else if(i == 3) {
+                            comando = comando.trim();
+
+                            delims.add(comando);
+                        }
+                        else if(i == 5) {
+                            comando = comando.trim();
+
+                            comandoSeparado = comando.split(" ", 5);
+
+                            decls.add(comandoSeparado[0]);
+                            tipos.add(comandoSeparado[1]);
+
+                            auxComandoSeparado = comandoSeparado[2].split("\\(", 2);
+
+                            ids.add(auxComandoSeparado[0]);
+                            delims.add("(");
+                            tipos.add(auxComandoSeparado[1]);
+
+                            ids.add(comandoSeparado[3].split("\\)", 1)[0]);
+                            delims.add(")");
+                            delims.add(comandoSeparado[4]);
+                        }
+                        else if(i == 6) {
+                            break;
+                        }
+
                         break;
                     } else {
                         if (i == gramaticaMiniJava.size() - 1) {
