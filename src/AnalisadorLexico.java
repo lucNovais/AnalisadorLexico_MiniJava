@@ -19,6 +19,7 @@ public class AnalisadorLexico {
     public static void main(String[] args) {
         ArrayList<Pattern> gramaticaMiniJava = new ArrayList<>();
 
+        // Criando as listas que irao armazenar os tokens coletados
         ArrayList<String> ids = new ArrayList<>();
         ArrayList<String> ops = new ArrayList<>();
         ArrayList<String> delims = new ArrayList<>();
@@ -27,6 +28,7 @@ public class AnalisadorLexico {
         ArrayList<String> tipos = new ArrayList<>();
         ArrayList<String> comments = new ArrayList<>();
 
+        // Definindo todos os padroes de expressoes regulares que identificam a sintaxe do MiniJava
         gramaticaMiniJava.add(Pattern.compile("^class [a-zA-Z][a-zA-Z0-9_]*? \\{$", 1));
         gramaticaMiniJava.add(Pattern.compile("^\s*?public static void main\\(String\\[\\] [a-zA-Z][a-zA-Z0-9_]*?\\) \\{$", 1));
         gramaticaMiniJava.add(Pattern.compile("^\\s*?System.out.println\\(\".*?\"|new [a-zA-Z][a-zA-Z0-9]*?\\(\\).[a-zA-Z][a-zA-Z0-9]*?\\([0-9]*?\\)\\);$", 1));
@@ -42,6 +44,7 @@ public class AnalisadorLexico {
         gramaticaMiniJava.add(Pattern.compile("^\s*\\/\\*.*\\*\\/|\\/\\/.*$", 1));
 
         try {
+            // Lendo o arquivo de entrada
             File arq = new File("entrada.txt");
             FileReader reader = new FileReader(arq);
             BufferedReader leitor = new BufferedReader(reader);
@@ -51,12 +54,15 @@ public class AnalisadorLexico {
             String[] auxComandoSeparado;
 
             while(comando != null) {
+                // Itera sobre todos os padroes de expressoes regulares e tenta encontrar algum que corresponda a linha em questao
                 for(int i = 0; i < gramaticaMiniJava.size(); i++) {
                     Matcher matcher = gramaticaMiniJava.get(i).matcher(comando);
                     boolean matchFound = matcher.find();
+
                     if(matchFound) {
                         System.out.println("Comando: \n\t'"+ comando + "' valido!\n");
 
+                        // Dependendo do valor de i, teremos um padrao especifico encontrado
                         if(i == 0) {
                             comandoSeparado = comando.split(" ", 3);
                             decls.add(comandoSeparado[0]);
@@ -211,14 +217,16 @@ public class AnalisadorLexico {
                         }
                     }
                 }
-                comando = leitor.readLine();
+                comando = leitor.readLine(); // Cada linha do arquivo de entrada sera lida
             }
+
             leitor.close();
         }
         catch(IOException e) {
             System.out.println("Erro na leitura do arquivo de entrada!");
         }
         
+        // Imprimindo os tokens coletados
         System.out.println("\nTokens coletados: \n");
         System.out.println("ID: " + ids);
         System.out.println("OP: " + ops);
