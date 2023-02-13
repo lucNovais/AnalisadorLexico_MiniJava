@@ -2,6 +2,12 @@
 
 Analisador Léxico desenvolvido para o Trabalho Prático da disciplina de Compiladores I. Este analisador verifica se expressões da linguagem MiniJava estão de acordo com a sintaxe definida.
 
+### Alunos
+
+- Isac Lopes
+- Lucas Novais
+- Marcos Alexandre
+
 ### Exemplo de funcionamento
 
 - Para o arquivo `entrada.txt`, temos a seguinte saída:
