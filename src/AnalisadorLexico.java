@@ -34,7 +34,12 @@ public class AnalisadorLexico {
         gramaticaMiniJava.add(Pattern.compile("^\s*$", 1));
         gramaticaMiniJava.add(Pattern.compile("^\s*public int|boolean|void|int\\[\\]|boolean\\[\\] [a-zA-Z][a-zA-Z0-9_]*?\\(int|boolean|void|int\\[\\]|boolean\\[\\] [a-zA-Z][a-zA-Z0-9_]*?\\) \\{$", 1));
         gramaticaMiniJava.add(Pattern.compile("^\s*int|bool|int\\[\\]|bool\\[\\] [a-zA-Z][a-zA-Z0-9_]*?;$", 1));
-        gramaticaMiniJava.add(Pattern.compile("^\s*if \\(num <|>|==|<=|>= [0-9]\\)\s*?\\{?$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*if \\([a-zA-Z][a-zA-Z0-9]*? <|>|==|<=|>= [0-9]\\)\s*?\\{?$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*[a-zA-Z][a-zA-Z0-9_]* = [0-9]|\".\";$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*else|else if(.)|else \\{| else if(.) \\{$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*[a-zA-Z][a-zA-Z0-9_]* = [a-zA-Z][a-zA-Z0-9_]* [*+\\-\\!] [(a-zA-Z][a-zA-Z0-9_.()+\\-\\*]*;$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*return [a-zA-Z][a-zA-Z0-9_]*;$", 1));
+        gramaticaMiniJava.add(Pattern.compile("^\s*\\/\\*.*\\*\\/|\\/\\/.*$", 1));
 
         try {
             File arq = new File("entrada.txt");
@@ -126,12 +131,77 @@ public class AnalisadorLexico {
                             delims.add("(");
                             tipos.add(auxComandoSeparado[1]);
 
-                            ids.add(comandoSeparado[3].split("\\)", 1)[0]);
+                            ids.add(comandoSeparado[3].split("\\)", 0)[0]);
                             delims.add(")");
                             delims.add(comandoSeparado[4]);
                         }
                         else if(i == 6) {
-                            break;
+                            comando = comando.trim();
+
+                            comandoSeparado = comando.split(" ", 2);
+                            
+                            tipos.add(comandoSeparado[0]);
+                            ids.add(comandoSeparado[1].substring(0, comandoSeparado[1].length() - 1));
+                        }
+                        else if(i == 7) {
+                            comando = comando.trim();
+
+                            if (comando.indexOf("{") == -1)
+                                comandoSeparado = comando.split(" ", 2);
+                            else
+                                comandoSeparado = comando.split(" ", 3);
+
+                            fluxos.add(comandoSeparado[0]);
+
+                            auxComandoSeparado = comandoSeparado[1].substring(1).split(" ", 3);
+                            
+                            delims.add("(");
+                            ids.add(auxComandoSeparado[0]);
+                            ops.add(auxComandoSeparado[1]);
+                            delims.add(")");
+                        }
+                        else if(i == 8) {
+                            comando = comando.trim();
+
+                            comandoSeparado = comando.split(" ", 3);
+
+                            ids.add(comandoSeparado[0]);
+                            ops.add(comandoSeparado[1]);
+                        }
+                        else if(i == 9) {
+                            comando = comando.trim();
+
+                            fluxos.add(comando);
+                        }
+                        else if(i == 10) {
+                            comando = comando.trim();
+
+                            comandoSeparado = comando.split(" ", 5);
+
+                            ids.add(comandoSeparado[0]);
+                            ops.add(comandoSeparado[1]);
+                            ids.add(comandoSeparado[2]);
+                            ops.add(comandoSeparado[3]);
+                            fluxos.add(comandoSeparado[4].substring(0, comandoSeparado[4].length() - 1));
+                        }
+                        else if(i == 11) {
+                            comando = comando.trim();
+
+                            comandoSeparado = comando.split(" ", 2);
+
+                            fluxos.add(comandoSeparado[0]);
+                            ids.add(comandoSeparado[1].substring(0, comandoSeparado[1].length() - 1));
+                        }
+                        else if(i == 12) {
+                            comando = comando.trim();
+
+                            if (comando.indexOf("//") == -1) {
+                                comments.add("/*");
+                                comments.add("*/");
+                            }
+                            else {
+                                comments.add("//");
+                            }
                         }
 
                         break;
